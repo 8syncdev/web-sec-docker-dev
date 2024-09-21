@@ -1,0 +1,3 @@
+Based on the Dockerfile you've shared, the username and password set up in the container are:
+Username: seed
+Password: dees
