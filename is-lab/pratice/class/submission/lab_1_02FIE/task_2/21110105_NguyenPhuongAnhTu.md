@@ -6,11 +6,11 @@ Run docker container from SQLi:
 docker compose up -d
 ```
 
-![](./images/Screenshot_1.png)
+![](./images_2/Screenshot_1.png)
 
 Website running on port 3128.
 
-![](./images/Screenshot_2.png)
+![](./images_2/Screenshot_2.png)
 
 - Install sqlmap.
 To get into the Linux command line of the Docker container and install sqlmap, you can follow these steps:
@@ -20,7 +20,7 @@ To get into the Linux command line of the Docker container and install sqlmap, y
 ```bash
 docker ps
 ```
-![](./images/Screenshot_3.png)
+![](./images_2/Screenshot_3.png)
 
 2. To enter the container's command line, use:
 
@@ -52,7 +52,7 @@ pip install sqlmap
 sqlmap --version
 ```
 
-![](./images/Screenshot_4.png)
+![](./images_2/Screenshot_4.png)
 
 - Write instructions and screenshots in the answer sections. Strictly follow the below structure for your writeup. 
 
@@ -64,13 +64,13 @@ Use script into terminal:
 py sqlmap.py -u "http://localhost:3128" --level=3 --dbs
 ```
 
-![](./images/Screenshot_6.png)
+![](./images_2/Screenshot_6.png)
 
 Detect database is MySQL.
-![](./images/Screenshot_8.png)
+![](./images_2/Screenshot_8.png)
 
 Detect 79 tables.
-![](./images/Screenshot_9.png)
+![](./images_2/Screenshot_9.png)
 
 Detailed explanation:
 - `py sqlmap.py`: This runs the sqlmap Python script.
@@ -88,7 +88,7 @@ Use script into terminal:
 py sqlmap.py -u "http://localhost:3128/unsafe_home.php?username=Admin'--&Password=" --level=5 --risk=3 --tables --users --dump
 ```
 
-![](./images/Screenshot_7.png)
+![](./images_2/Screenshot_7.png)
 
 Detailed explanation:
 - `-u "http://localhost:3128/unsafe_home.php?username=Admin'--&Password="`: Specifies the target URL, including a potential injection point in the username parameter.
@@ -100,7 +100,7 @@ Detailed explanation:
 
 This comprehensive command attempts to exploit the SQL injection vulnerability to extract as much information as possible, including table structures, user details, and table contents. The high level and risk settings make this a very aggressive scan, which could potentially cause issues with the target database if not used carefully.
 
-![](./images/Screenshot_11.png)
+![](./images_2/Screenshot_11.png)
 
 Database users tables store in `C:\AnhTuDev\Uni\IS\lab-is\submission\lab_1_02FIE\task_2\code\sqlmap-dev\data\txt\common-columns.txt`
 
@@ -114,12 +114,12 @@ py sqlmap.py -u "http://localhost:3128/unsafe_home.php?username=Admin'--&Passwor
 
 Check output in `sqlmap_output` folder.
 
-![](./images/Screenshot_12.png)
+![](./images_2/Screenshot_12.png)
 
 
 Check table `credential` in `sqllab_users` database.
 
-![](./images/Screenshot_13.png)
+![](./images_2/Screenshot_13.png)
 
 You can see the password of all database users in `sqlmap_output` folder or `credential` table.
 
