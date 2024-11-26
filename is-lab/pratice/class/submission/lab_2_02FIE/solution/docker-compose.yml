@@ -1,0 +1,27 @@
+version: '3'
+services:
+  server:
+    build: .
+    hostname: server
+    image: server
+    networks:
+      - crypto_net
+    volumes:
+      - ./server:/crypto/server
+    command: tail -f /dev/null
+    container_name: server
+
+  client:
+    build: .
+    hostname: client
+    image: client
+    networks:
+      - crypto_net
+    volumes:
+      - ./client:/crypto/client
+    command: tail -f /dev/null
+    container_name: client
+
+networks:
+  crypto_net:
+    driver: bridge
