@@ -230,11 +230,12 @@ openssl dgst -sha256 \
  
 
 
-**Question 2**:
-Modify the 8th byte of encrypted file in both modes (this emulates corrupted ciphertext).
-Decrypt corrupted file, watch the result and give your comment on Chaining dependencies and Error propagation criteria.
+# Task 2: Encrypting large message 
 
-**Answer 2**:
+**Question 1**: 
+Encrypt the file with aes-256 cipher in CFB and OFB modes. How do you evaluate both cipher as far as error propagation and adjacent plaintext blocks are concerned.
+
+**Answer 1**:
 
 ## 1. Create a 256-bit key and a 128-bit IV
 
@@ -279,7 +280,26 @@ nc -l -p 1234 > encrypted_cfb.bin
 - Client encrypts the file using CFB mode
 - Encrypted file is sent to server using netcat
 
-## 3. Encrypt OFB mode
+## 3. Evaluation
+
+1. **CFB (Cipher Feedback) Mode:**
+   - Each block depends on previous ciphertext block
+   - Changes in one block affect all subsequent blocks
+   - Better for streaming applications
+   - More sensitive to transmission errors
+
+2. **OFB (Output Feedback) Mode:**
+   - Blocks are independent of ciphertext
+   - Generates keystream independently
+   - Better for noisy channels
+   - Errors don't propagate between blocks
+
+
+**Question 2**:
+Modify the 8th byte of encrypted file in both modes (this emulates corrupted ciphertext).
+Decrypt corrupted file, watch the result and give your comment on Chaining dependencies and Error propagation criteria.
+
+## 4. Encrypt OFB mode
 
 **Client Side:**
 ```bash
@@ -305,7 +325,7 @@ nc -l -p 1234 > encrypted_ofb.bin
 - Client encrypts the file using OFB mode
 - Encrypted file is sent to server using netcat
 
-## 4. Send key and IV to server
+## 5. Send key and IV to server
 
 **Client Side:**
 ```bash
@@ -320,7 +340,7 @@ nc -l -p 1234 > iv.txt
 ```
 ![](./image/Screenshot_14.png)
 
-## 5. Create corrupted ciphertext and edit byte 8
+## 6. Create corrupted ciphertext and edit byte 8
 
 Create corrupted ciphertext
 
@@ -341,7 +361,7 @@ printf '\x00' | dd of=corrupted_ofb.bin bs=1 seek=7 count=1 conv=notrunc
 ```
 ![](./image/Screenshot_16.png)
 
-## 6. Decrypt corrupted ciphertext
+## 7. Decrypt corrupted ciphertext
 
 **Server Side: CFB mode**
 ```bash
@@ -411,7 +431,7 @@ cat decrypted_ofb_corrupted.txt
   - The error propagates to the next block
   - Subsequent blocks are decrypted normally
 
-## 6. Security Analysis
+## 8. Security Analysis
 
 - Chaining dependencies:
   - The error in the corrupted ciphertext affects the entire current block
