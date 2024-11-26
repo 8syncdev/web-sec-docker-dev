@@ -280,26 +280,77 @@ nc -l -p 1234 > encrypted_cfb.bin
 - Client encrypts the file using CFB mode
 - Encrypted file is sent to server using netcat
 
-## 3. Evaluation
+## 3. Encrypt the file in CFB mode
+*We'll encrypt the message using AES-256 in CFB mode with the generated key and IV:*
+
+```bash
+openssl enc -aes-256-cfb \
+    -in input.txt \
+    -out input_cfb.bin \
+    -K $(cat key.txt) \
+    -iv $(cat iv.txt)
+```
+![](./image/Screenshot_21.png)
+
+## 4. Decrypt the CFB encrypted message
+```bash
+openssl enc -d -aes-256-cfb \
+    -in input_cfb.bin \
+    -out input_cfb_dec.txt \
+    -K $(cat key.txt) \
+    -iv $(cat iv.txt)
+```
+![](./image/Screenshot_22.png)
+
+## 5. Encrypt the file in OFB mode
+
+```bash
+openssl enc -aes-256-ofb \
+    -in input.txt \
+    -out input_ofb.bin \
+    -K $(cat key.txt) \
+    -iv $(cat iv.txt)
+```
+![](./image/Screenshot_23.png)
+
+## 6. Decrypt the OFB encrypted message
+```bash
+openssl enc -d -aes-256-ofb \
+    -in input_ofb.bin \
+    -out input_ofb_dec.txt \
+    -K $(cat key.txt) \
+    -iv $(cat iv.txt)
+```
+![](./image/Screenshot_24.png)
+
+## 7. Evaluation of Error Propagation
 
 1. **CFB (Cipher Feedback) Mode:**
+   - Error propagation affects current block and subsequent blocks
    - Each block depends on previous ciphertext block
    - Changes in one block affect all subsequent blocks
-   - Better for streaming applications
+   - Better suited for streaming applications
    - More sensitive to transmission errors
 
 2. **OFB (Output Feedback) Mode:**
-   - Blocks are independent of ciphertext
-   - Generates keystream independently
-   - Better for noisy channels
-   - Errors don't propagate between blocks
+   - Error in ciphertext affects only the corresponding block
+   - Blocks are processed independently
+   - No error propagation between blocks
+   - Better suited for noisy channels
+   - More resilient to transmission errors
 
+3. **Mode Comparison:**
+   - CFB provides better security through block chaining
+   - OFB offers better error resilience
+   - Choice depends on application requirements:
+     - Use CFB when security is priority
+     - Use OFB when error resilience is priority
 
 **Question 2**:
 Modify the 8th byte of encrypted file in both modes (this emulates corrupted ciphertext).
 Decrypt corrupted file, watch the result and give your comment on Chaining dependencies and Error propagation criteria.
 
-## 4. Encrypt OFB mode
+## 8. Encrypt OFB mode
 
 **Client Side:**
 ```bash
@@ -325,7 +376,7 @@ nc -l -p 1234 > encrypted_ofb.bin
 - Client encrypts the file using OFB mode
 - Encrypted file is sent to server using netcat
 
-## 5. Send key and IV to server
+## 9. Send key and IV to server
 
 **Client Side:**
 ```bash
@@ -340,7 +391,7 @@ nc -l -p 1234 > iv.txt
 ```
 ![](./image/Screenshot_14.png)
 
-## 6. Create corrupted ciphertext and edit byte 8
+## 10. Create corrupted ciphertext and edit byte 8
 
 Create corrupted ciphertext
 
@@ -361,7 +412,7 @@ printf '\x00' | dd of=corrupted_ofb.bin bs=1 seek=7 count=1 conv=notrunc
 ```
 ![](./image/Screenshot_16.png)
 
-## 7. Decrypt corrupted ciphertext
+## 11. Decrypt corrupted ciphertext
 
 **Server Side: CFB mode**
 ```bash
@@ -431,7 +482,7 @@ cat decrypted_ofb_corrupted.txt
   - The error propagates to the next block
   - Subsequent blocks are decrypted normally
 
-## 8. Security Analysis
+## 12. Security Analysis
 
 - Chaining dependencies:
   - The error in the corrupted ciphertext affects the entire current block
